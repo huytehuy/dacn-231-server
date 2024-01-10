@@ -17,28 +17,125 @@ module.exports.post_order = async (req, res) => {
 
 module.exports.send_mail = async (req, res) => {
 
-    const carts = await Detail_Order.find({ id_order: req.body.id_order }).populate('id_product')
+    // const carts = await Detail_Order.find({ id_order: req.body.id_order }).populate('id_product')
 
     //B3: Bắt đầu gửi Mail xác nhận đơn hàng
-    const htmlHead = '<table style="width:50%">' +
-        '<tr style="border: 1px solid black;"><th style="border: 1px solid black;">Tên Sản Phẩm</th><th style="border: 1px solid black;">Hình Ảnh</th><th style="border: 1px solid black;">Giá</th><th style="border: 1px solid black;">Số Lượng</th><th style="border: 1px solid black;">Size</th><th style="border: 1px solid black;">Thành Tiền</th>'
+    // const htmlHead = '<table style="width:50%">' +
+    //     '<tr style="border: 1px solid black;"><th style="border: 1px solid black;">Tên Sản Phẩm</th><th style="border: 1px solid black;">Hình Ảnh</th><th style="border: 1px solid black;">Giá</th><th style="border: 1px solid black;">Số Lượng</th><th style="border: 1px solid black;">Size</th><th style="border: 1px solid black;">Thành Tiền</th>'
 
-    let htmlContent = ""
+    // let htmlContent = ""
 
-    for (let i = 0; i < carts.length; i++) {
-        htmlContent += '<tr>' +
-            '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + carts[i].id_product.name_product + '</td>' +
-            '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;"><img src="' + carts[i].id_product.image + '" width="80" height="80"></td>' +
-            '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + carts[i].id_product.price_product + '$</td>' +
-            '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + carts[i].count + '</td>' +
-            '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + carts[i].size + '</td>' +
-            '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + (parseInt(carts[i].id_product.price_product) * parseInt(carts[i].count)) + '$</td>' +
-            '<tr>'
-    }
+    // for (let i = 0; i < carts.length; i++) {
+    //     htmlContent += '<tr>' +
+    //         '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + carts[i].id_product.name_product + '</td>' +
+    //         '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;"><img src="' + carts[i].id_product.image + '" width="80" height="80"></td>' +
+    //         '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + carts[i].id_product.price_product + '$</td>' +
+    //         '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + carts[i].count + '</td>' +
+    //         '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + carts[i].size + '</td>' +
+    //         '<td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">' + (parseInt(carts[i].id_product.price_product) * parseInt(carts[i].count)) + '$</td>' +
+    //         '<tr>'
+    // }
 
-    const htmlResult = '<h1>Xin Chào ' + req.body.fullname + '</h1>' + '<h3>Phone: ' + req.body.phone + '</h3>' + '<h3>Address:' + req.body.address + '</h3>' +
-        htmlHead + htmlContent + '<h1>Phí Vận Chuyển: ' + req.body.price + '$</h1></br>' + '<h1>Tổng Thanh Toán: ' + req.body.total + '$</h1></br>' + '<p>Cảm ơn bạn!</p>'
+    // const htmlResult = '<h1>Xin Chào ' + req.body.fullname + '</h1>' + '<h3>Phone: ' + req.body.phone + '</h3>' + '<h3>Address:' + req.body.address + '</h3>' +
+    //     htmlHead + htmlContent + '<h1>Phí Vận Chuyển: ' + req.body.price + '$</h1></br>' + '<h1>Tổng Thanh Toán: ' + req.body.total + '$</h1></br>' + '<p>Cảm ơn bạn!</p>'
 
+    const baseURL = 'https://dacn-231.vercel.app'
+    const htmlResult = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            img {
+                max-width: 50px;
+                max-height: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Order Invoice</h2>
+    
+        <!-- Customer Information -->
+        <p>Customer Name: ${req.body.fullname}</p>
+        <p>Phone Number: ${req.body.phone}</p>
+        <p>Order ID: ${req.body.id_order}</p>
+        <p>Thank you for your order! Below is the invoice for your recent purchase:</p>
+    
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Image</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            ${req.body.data_carts.map((data) => `
+            <tr>
+                <td><a href="${baseURL}/detail/${data.id_product}">${data.name_product}</a></td>
+                <td><img src="${data.image}" alt="${data.name_product}"></td>
+                <td>${new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(data.price_product) + ' VNĐ'}</td>
+                <td>${data.count}</td>
+                <td>${new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(parseInt(data.price_product) * parseInt(data.count)) + ' VNĐ'}</td>
+            </tr>
+        `).join('')}
+        
+                
+                <!-- Subtotal -->
+                <tr>
+                    <td colspan="4" style="text-align: right;">Subtotal</td>
+                    <td>${new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(req.body.subtotal) + ' VNĐ'}</td>
+                </tr>
+    
+                <!-- Shipping Fee -->
+                <tr>
+                    <td colspan="4" style="text-align: right;">Shipping Fee</td>
+                    <td>${new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(req.body.feeship) + ' VNĐ'}</td>
+                </tr>
+    
+                <!-- Total Amount -->
+                <tr>
+                    <td colspan="4" style="text-align: right; font-weight: bold;">Total Amount</td>
+                    <td style="font-weight: bold;">${new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(req.body.total) + ' VNĐ'}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>View order details: <a href="${baseURL}/history/${req.body.id_order}">Here</a></p>
+    
+        <p>Thank you for choosing our products. If you have any questions, please contact us.</p>
+        <ul style="list-style:none;margin:0px;padding:0px">
+        <li>
+            <span>Phone: </span>
+            <a href="tel:0366889853">0366889853</a>
+        </li>
+        <li>
+            <span>Email: </span>
+            <a href="mailto://huy.phamkhmtjapan@hcmut.edu.vn">huy.phamkhmtjapan@hcmut.edu.vn</a>
+        </li>
+    </ul>
+    </body>
+    </html>
+    
+    `
     // Thực hiện gửi email (to, subject, htmlContent)
     await mailer.sendMail(req.body.email, 'Hóa Đơn Đặt Hàng', htmlResult)
 

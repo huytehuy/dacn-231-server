@@ -60,11 +60,11 @@ module.exports.create = async (req, res) => {
 
             var fileProduct = "/img/" + fileName
 
-            newProduct.image = "http://localhost:8000" + fileProduct
+            newProduct.image = "https://dacn-231-t581.onrender.com" + fileProduct
 
             fileImage.mv('./public/img/' + fileName)
         }
-        else newProduct.image = 'http://localhost:8000/img/nophoto.jpg'
+        else newProduct.image = 'https://dacn-231-t581.onrender.com/img/nophoto.jpg'
 
         newProduct.save();
         res.json({ msg: "Bạn đã thêm thành công" })
