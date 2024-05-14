@@ -37,17 +37,17 @@ module.exports.index = async (req, res) => {
 module.exports.create = async (req, res) => {
     const product = await Product.find();
 
-    const productFilter = product.filter((c) => {
-        return c.name_product.toUpperCase() === req.body.name.toUpperCase().trim()
-    });
+    // const productFilter = product.filter((c) => {
+    //     return c.name_product.toUpperCase() === req.body.name_product.toUpperCase().trim()
+    // });
 
-    if (productFilter.length > 0) {
-        res.json({ msg: 'Sản phẩm đã tồn tại' })
-    } else {
+    // if (productFilter.length > 0) {
+    //     res.json({ msg: 'Sản phẩm đã tồn tại' })
+    // } else {
         var newProduct = new Product()
-        req.body.name = req.body.name.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
-        newProduct.name_product = req.body.name
-        newProduct.price_product = req.body.price
+        req.body.name_product = req.body.name_product.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
+        newProduct.name_product = req.body.name_product
+        newProduct.price_product = req.body.price_product
         newProduct.id_category = req.body.category
         // newProduct.number = req.body.number
         newProduct.describe = req.body.description
@@ -60,16 +60,16 @@ module.exports.create = async (req, res) => {
 
             var fileProduct = "/img/" + fileName
 
-            newProduct.image = "https://dacn-231-t581.onrender.com" + fileProduct
+            newProduct.image = "http://locahost:8000" + fileProduct
 
             fileImage.mv('./public/img/' + fileName)
         }
-        else newProduct.image = 'https://dacn-231-t581.onrender.com/img/nophoto.jpg'
+        else newProduct.image = 'http://localhost:8000/img/nophoto.jpg'
 
         newProduct.save();
         res.json({ msg: "Bạn đã thêm thành công" })
     }
-}
+// }
 
 module.exports.delete = async (req, res) => {
     const id = req.query.id;
@@ -91,16 +91,17 @@ module.exports.details = async (req, res) => {
 }
 
 module.exports.update = async (req, res) => {
-    const product = await Product.find();
+    console.log(req.body);
+    // const product = await Product.find();
 
-    const productFilter = product.filter((c) => {
-        return c.name_product.toUpperCase() === req.body.name.toUpperCase().trim() && c.id !== req.body.id
-    });
+    // const productFilter = product.filter((c) => {
+    //     return c.name_product.toUpperCase() === req.body.name_product.toUpperCase().trim() && c.id !== req.body.id
+    // });
 
-    if (productFilter.length > 0) {
-        res.json({ msg: 'Sản phẩm đã tồn tại' })
-    } else {
-        req.body.name = req.body.name.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
+    // if (productFilter.length > 0) {
+    //     res.json({ msg: 'Sản phẩm đã tồn tại' })
+    // } else {
+        req.body.name_product = req.body.name_product.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
 
 
         if (req.files) {
@@ -111,10 +112,10 @@ module.exports.update = async (req, res) => {
 
             var fileProduct = "/img/" + fileName
 
-            await Product.updateOne({ _id: req.body.id }, {
-                name_product: req.body.name,
-                price_product: req.body.price,
-                id_category: req.body.category,
+            await Product.updateOne({ _id: req.body._id }, {
+                name_product: req.body.name_product,
+                price_product: req.body.price_product,
+                id_category: req.body.id_category,
                 // number: req.body.number,
                 describe: req.body.description,
                 gender: req.body.gender,
@@ -127,10 +128,10 @@ module.exports.update = async (req, res) => {
             fileImage.mv('./public/img/' + fileName)
         }
         else {
-            await Product.updateOne({ _id: req.body.id }, {
-                name_product: req.body.name,
-                price_product: req.body.price,
-                id_category: req.body.category,
+            await Product.updateOne({ _id: req.body._id }, {
+                name_product: req.body.name_product,
+                price_product: req.body.price_product,
+                id_category: req.body.id_category,
                 // number: req.body.number,
                 describe: req.body.description,
                 gender: req.body.gender
@@ -142,4 +143,4 @@ module.exports.update = async (req, res) => {
 
 
     }
-}
+// }

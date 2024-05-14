@@ -123,12 +123,12 @@ module.exports.login = async (req, res) => {
         res.json({ msg: "Không Tìm Thấy User" })
     }
     else {
-        const auth = await bcrypt.compare(password, user.password)
+        const auth = password===user.password
         if (auth) {
             var token = jwt.sign(user._id.toJSON(), 'gfdgfd');
             res.json({ msg: "Đăng nhập thành công", user: user, jwt: token })
         } else {
-            res.json({ msg: "Sai mật khẩu" })
+            res.json({ msg: "Sai mật khẩu" ,user:user.password})
         }
     }
 }

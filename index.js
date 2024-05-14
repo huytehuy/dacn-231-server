@@ -65,7 +65,6 @@ app.use('/api/Comment', CommentAPI)
 app.use('/api/Note', NoteAPI)
 app.use('/api/DetailOrder', Detail_OrderAPI)
 app.use('/api/Category', CategoryAPI)
-
 app.use('/api/admin/Product', ProductAdmin)
 app.use('/api/admin/Category', CategoryAdmin)
 app.use('/api/admin/Permission', Permission)
@@ -73,33 +72,15 @@ app.use('/api/admin/User', UserAdmin)
 app.use('/api/admin/Order', Order)
 app.use('/api/admin/Coupon', Coupon)
 app.use('/api/admin/Sale', Sale)
-const PORT = 6000;
 
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
 
 // Route to handle POST requests
-app.post('/api/payment/callback', (req, res) => {
-  const receivedData = req.body;
-  console.log('Received data:', receivedData);
-
-  // You can process the received data here as needed
-
-  // Respond back to the client
-  res.send('Data received by the server');
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
-
 
 
 io.on("connection", (socket) => {
   console.log(`Có người vừa kết nối, socketID: ${socket.id}`);
-
-
   socket.on('send_order', (data) => {
     console.log(data)
     socket.broadcast.emit("receive_order", data);
