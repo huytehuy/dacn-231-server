@@ -16,6 +16,8 @@ router.delete('/delete', Category.delete)
 
 router.put('/update', Category.update)
 
+// router.get('/categoryItemCount', Category.getCategoryItemCount);
+
 
 
 module.exports = router

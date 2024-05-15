@@ -127,3 +127,47 @@ module.exports.detail = async (req, res) => {
 
     res.json(category)
 }
+
+// module.exports.getCategoryItemCount = async (req, res) => {
+//     try {
+//         const categories = await Category.find();
+//         const categoryIds = categories.map(category => category._id);
+
+//         const categoryItemCount = await Product.aggregate([
+//             {
+//                 $match: {
+//                     id_category: { $in: categoryIds }
+//                 }
+//             },
+//             {
+//                 $group: {
+//                     _id: "$id_category",
+//                     itemCount: { $sum: 1 }
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: "categories",
+//                     localField: "_id",
+//                     foreignField: "_id",
+//                     as: "category"
+//                 }
+//             },
+//             {
+//                 $unwind: "$category"
+//             },
+//             {
+//                 $project: {
+//                     _id: 0,
+//                     category: "$category.category",
+//                     itemCount: 1
+//                 }
+//             }
+//         ]);
+
+//         res.json(categoryItemCount);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ msg: 'Có lỗi xảy ra trong quá trình lấy số lượng sản phẩm theo loại', error: err });
+//     }
+// };

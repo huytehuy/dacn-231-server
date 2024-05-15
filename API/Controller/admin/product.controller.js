@@ -35,40 +35,27 @@ module.exports.index = async (req, res) => {
 }
 
 module.exports.create = async (req, res) => {
-    const product = await Product.find();
+    try {
+        // const products = await Product.find();
 
-    // const productFilter = product.filter((c) => {
-    //     return c.name_product.toUpperCase() === req.body.name_product.toUpperCase().trim()
-    // });
+        const newProduct = new Product();
+        req.body.name_product = req.body.name_product
+            .toLowerCase()
+            .replace(/^.|\s\S/g, a => a.toUpperCase());
 
-    // if (productFilter.length > 0) {
-    //     res.json({ msg: 'Sản phẩm đã tồn tại' })
-    // } else {
-        var newProduct = new Product()
-        req.body.name_product = req.body.name_product.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
-        newProduct.name_product = req.body.name_product
-        newProduct.price_product = req.body.price_product
-        newProduct.id_category = req.body.category
-        // newProduct.number = req.body.number
-        newProduct.describe = req.body.description
-        newProduct.gender = req.body.gender
-
-        if (req.files) {
-            var fileImage = req.files.file;
-
-            var fileName = fileImage.name
-
-            var fileProduct = "/img/" + fileName
-
-            newProduct.image = "http://locahost:8000" + fileProduct
-
-            fileImage.mv('./public/img/' + fileName)
-        }
-        else newProduct.image = 'http://localhost:8000/img/nophoto.jpg'
-
-        newProduct.save();
+        newProduct.name_product = req.body.name_product;
+        newProduct.price_product = req.body.price_product;
+        newProduct.id_category = req.body.category;
+        newProduct.describe = req.body.description;
+        newProduct.gender = req.body.gender;
+        newProduct.image = req.body.image;
+        await newProduct.save();
         res.json({ msg: "Bạn đã thêm thành công" })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Có lỗi xảy ra", error: error.message });
     }
+};
 // }
 
 module.exports.delete = async (req, res) => {
@@ -104,34 +91,35 @@ module.exports.update = async (req, res) => {
         req.body.name_product = req.body.name_product.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
 
 
-        if (req.files) {
-            var fileImage = req.files.file;
+        // if (req.files) {
+        //     var fileImage = req.files.file;
 
-            var fileName = fileImage.name
+        //     var fileName = fileImage.name
 
 
-            var fileProduct = "/img/" + fileName
+        //     var fileProduct = "/img/" + fileName
 
+        //     await Product.updateOne({ _id: req.body._id }, {
+        //         name_product: req.body.name_product,
+        //         price_product: req.body.price_product,
+        //         id_category: req.body.id_category,
+        //         // number: req.body.number,
+        //         describe: req.body.description,
+        //         gender: req.body.gender,
+        //         image: fileProduct
+        //     }, function (err, res) {
+        //         if (err) return res.json({ msg: err });
+        //     });
+        //     res.json({ msg: "Bạn đã update thành công" })
+
+        //     fileImage.mv('./public/img/' + fileName)
+        // }
+        // else {
             await Product.updateOne({ _id: req.body._id }, {
                 name_product: req.body.name_product,
                 price_product: req.body.price_product,
-                id_category: req.body.id_category,
-                // number: req.body.number,
-                describe: req.body.description,
-                gender: req.body.gender,
-                image: fileProduct
-            }, function (err, res) {
-                if (err) return res.json({ msg: err });
-            });
-            res.json({ msg: "Bạn đã update thành công" })
-
-            fileImage.mv('./public/img/' + fileName)
-        }
-        else {
-            await Product.updateOne({ _id: req.body._id }, {
-                name_product: req.body.name_product,
-                price_product: req.body.price_product,
-                id_category: req.body.id_category,
+                id_category: req.body.category,
+                image: req.body.image,
                 // number: req.body.number,
                 describe: req.body.description,
                 gender: req.body.gender
@@ -142,5 +130,5 @@ module.exports.update = async (req, res) => {
         }
 
 
-    }
+    // }
 // }
