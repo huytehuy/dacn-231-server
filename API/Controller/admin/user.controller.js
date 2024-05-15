@@ -111,24 +111,25 @@ module.exports.update = async (req, res) => {
 }
 
 module.exports.login = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const password = req.body.password;
+        const user = await User.findOne({ email }).populate('id_permission');
 
-    const email = req.body.email
-    const password = req.body.password
-
-    const body = [{ username: email }, { email: email }]
-
-    const user = await User.findOne({ $or: body }).populate('id_permission')
-
-    if (user === null) {
-        res.json({ msg: "Không Tìm Thấy User" })
-    }
-    else {
-        const auth = password===user.password
-        if (auth) {
-            var token = jwt.sign(user._id.toJSON(), 'gfdgfd');
-            res.json({ msg: "Đăng nhập thành công", user: user, jwt: token })
-        } else {
-            res.json({ msg: "Sai mật khẩu" ,user:user.password})
+        if (!user) {
+            return res.json({ msg: "Không Tìm Thấy User" });
         }
+
+        const isPasswordValid = password == user.password;
+
+        if (isPasswordValid) {
+            const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
+            return res.json({ msg: "Đăng nhập thành công", user, jwt: token });
+        } else {
+            return res.json({ msg: "Sai mật khẩu" });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ msg: "Internal server error" });
     }
-}
+};
