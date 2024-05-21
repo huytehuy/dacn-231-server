@@ -1,7 +1,7 @@
 const nodeMailer = require('nodemailer');
 
-const adminEmail = 'phamkhanhhuy1231@gmail.com'; // Replace with your email
-const adminPassword = 'xobehsvybqwpjfpw'; // Replace with your app password
+const adminEmail = 'huy.phamkhmtjapan@hcmut.edu.vn'; // Replace with your email
+const adminPassword = 'kgohnfoueasqzqmf'; // Replace with your app password
 
 const mailHost = 'smtp.gmail.com';
 const mailPort = 587;
